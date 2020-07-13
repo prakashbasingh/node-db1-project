@@ -60,7 +60,7 @@ router.put("/:id", (req, res) => {
         .update(change)
         .then(count => {
             if (count > 0) {
-                res.status(200).json(count)
+                res.status(200).json({data: count})
             } else {
                 res.status(404).json({message: "there is no record to update"})
             }
@@ -68,6 +68,24 @@ router.put("/:id", (req, res) => {
         .catch(error => {
             handleError(error, res)
         })
+})
+
+router.delete("/:id", (req, res) => {
+    const { id } = req.params
+    AccountDb("accounts")
+    .where ({ id })
+    .del() // do not forget to have where here
+    .then(count => {
+        //count is the number of record deleted
+        if(count > 0){
+            res.status(200).json({count})
+        } else {
+            res.status(404).json({message: "there is no record to delete"})
+        }
+    })
+    .catch(error => {
+        handleError(error, res)
+    })
 })
 
 
