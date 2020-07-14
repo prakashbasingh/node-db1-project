@@ -4,20 +4,20 @@ const AccountDb = require("../data/dbConfig.js");
 
 const router = express.Router()
 
+//************** GET **************\\
+// router.get("/", (req, res) => {
+//     AccountDb.select("*")
+//         .from("accounts")
+//         .then(accounts => {
+//             res.status(200).json(accounts)
+//         })
+//         .catch(error => {
+//             handleError(error, res)
 
-router.get("/", (req, res) => {
-    AccountDb.select("*")
-        .from("accounts")
-        .then(accounts => {
-            res.status(200).json(accounts)
-        })
-        .catch(error => {
-            handleError(error, res)
-
-            console.log(error)
-            res.status(500).json({message: "there is error getting accounts data"})
-        })
-})
+//             console.log(error)
+//             res.status(500).json({message: "there is error getting accounts data"})
+//         })
+// })
 
 router.get("/:id", (req, res) => {
     const { id } = req.params
@@ -32,6 +32,22 @@ router.get("/:id", (req, res) => {
             handleError(error, res)
         })
 })
+router.get("/", (req, res) => {
+    // const { id } = req.params
+    // const query = req.query
+    AccountDb.select("*")
+        .from("accounts")
+        .limit(req.query.limit || 5)
+        .orderBy(req.query.sortby || "id", "desc")
+        .then(account => {
+            res.status(200).json({account})
+        })
+        .catch(error => {
+            handleError(error, res)
+        })
+})
+
+//************** POST **************\\
 
 router.post("/", (req, res) => {
     const postAccountData = req.body
@@ -50,6 +66,8 @@ router.post("/", (req, res) => {
             handleError(error, res)
         })
 })
+
+//************** PUT **************\\
 
 router.put("/:id", (req, res) => {
     const { id } = req.params;
@@ -70,6 +88,8 @@ router.put("/:id", (req, res) => {
         })
 })
 
+//************** DELETE **************\\
+
 router.delete("/:id", (req, res) => {
     const { id } = req.params
     AccountDb("accounts")
@@ -87,10 +107,6 @@ router.delete("/:id", (req, res) => {
         handleError(error, res)
     })
 })
-
-
-
-
 
 
 function handleError(error, res) {
